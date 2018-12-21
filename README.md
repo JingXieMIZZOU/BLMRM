@@ -1,4 +1,4 @@
-﻿﻿# BLRM: A Bayesian Logistic Regression Model for Genome-Wide Detection of Allele-Specific Gene Expression
+﻿# BLRM: A Bayesian Logistic Regression Model for Genome-Wide Detection of Allele-Specific Gene Expression
 
 This R package provide a powerful and flexiable method (BLRM) to detect ASE genes and detect ASE variation within genes simultaneously while maintaining low computational requirements.
 
