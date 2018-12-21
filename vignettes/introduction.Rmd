@@ -1,0 +1,73 @@
+---
+title: "Genome-Wide Detection of Allele-Specific Gene Expression with BLRM"
+author: "Jing Xie"
+date: "`r Sys.Date()`"
+output: rmarkdown::pdf_document
+vignette: >
+  %\VignetteIndexEntry{Genome-Wide Detection of Allele-Specific Gene Expression with BLRM}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+## Introduction
+
+The $BLRM$ package performs genome-wide detection of allele-specific gene expression (ASE). Compared with most existing methods which do not test allele-specific expression of a gene as a whole and variation of allele-specific expression within a gene across exons separately and simultaneously, the BLRM method closes the gaps by a Bayesian hierarchical generalized linear mixed model which incorporates variation due to various sources and shares information across genes in the whole genome. Bayes factor was utilized to test the hypothesis of allele-specific gene expression for each gene and the ASE variations across SNPs within a gene. In this vignette, we first illustrate the use of this package by providing a quick start guide. Then a more detailed example will show additional functionality and features.
+
+## Quick start guide
+Given a data set contains gene ID, gene number, SNPs information and the counts data from maternal allele and total counts from both maternal and paternal alleles, if there are $R$ biological replicates at each SNP within a gene, then the allele-specific expression detection based on FDR=0.05 significance level can be performed by simply using the following code:
+
+```
+library("BLRM")
+rawdata<-read.csv(file="YourRawdata.csv")
+hyperparas<- para.est(data=rawdata,rep=R)
+res<- detection(data=rawdata,clean_index=hyperparas$index,paras=hyperparas$para,rep=R,fdr=0.05)
+list.ASEgene<-res$GeneEffect
+list.SNPvariation<-res$SNPEffect
+list.ASE.SNP<- res$GSEffect
+```
+
+## Example
+In this section, we will show how to apply $BLRM$ package to perform ASE detection step by step. The starting point is to load the raw data set which should be in the exactly same format with the example sample data below. The first three columns of the data set should be gene ID, gene number and the index of SNPs within each gene. The total counts from two alleles and the counts from maternal allele for all the biological replicates are listed in the following columns. The number of columns depends on the number of biological replicates, e.g., there are 4 replicates in this example thus the total number of columns is $11(3+2\times 4)$. Note the order of those columns matters in the raw data set and loading a data set in which the columns were organized differently would result in errors. 
+
+```{r}
+library("BLRM")
+load("mysample.rda")
+head(mysample,n=10)
+```
+
+The first step of $BLRM$ workflow is to convert the raw data into a structure which contains necessary information for analysis, i.e., SNPs, Replicates, counts from maternal allele ($YI$ in below example) and total counts ($NI$ in below example). This structure is friendly to GLMM fitting in $glmer()$ function in $lme4$ package. This step can be easily completed by repeatedly calling $GDD()$ function in $BLRM$ for each gene, and for every gene it will return a data set in the structure that would be needed for downstream analysis by $BLRM$ method. The below example shows the second gene in the example data set where the argument $i$ means gene number. Fortunately, users don't have to perform the data re-structurization manually because the $GDD()$ function was nested with functions in the next steps. But it's still useful when users need to check a specific gene.
+
+
+```{r}
+GDD(i=2,data = mysample, rep = 4)
+```
+
+The second step is to estimate the hyperparameters which can be conducted by calling $par.est()$ function. The $par.est()$ tries to fit Generalized Linear Mixed Model to the data of each gene by $glmer()$ function in $lme4$ and then filter out the genes with computational problems. The error messages in below chunk show computational problems occurred when calling $glmer()$. The function $par.est()$ returns three elements, i.e., the $para$ is the hyperparameter estimation and $index$ is a vector of the gene number of genes without computational problems, $all$ contains detailed intermediate results such as the p_values and estimated FDRs of likelihood ratio tests, the estimates of variance components etc.
+
+```{r warning=FALSE,message=FALSE}
+hyperparas<-para.est(data = mysample, rep = 4)
+names(hyperparas)
+hyperparas$para
+```
+
+Once the hyperparameter estimation and the index of genes without computation problems were achieved, the final step is to apply $detection()$ function to conduct hypothesis testing. The $detection()$ function returns three data frames corresponding to three situations of gene expression, as well as an additional data frame contains intermediate results. The $GeneEffect$ shows the testing results of genes exhibiting significant ASE gene effect, where $PP$ denotes the posterior probability, $FPP$ is $1-PP$, and $FDR$ is the estimated false discovery rate. Similary, the $SNPEffect$ shows the results of genes with significant ASE variation across SNPs; the $GSEffect$ corresponds to genes  exhibiting both ASE gene effect and ASE variation across SNPs.
+
+```{r warning=FALSE,message=FALSE}
+res<- detection(data=mysample,clean_index=hyperparas$index,paras=hyperparas$para,rep=4,fdr=0.05)
+list.ASEgene<-res$GeneEffect
+list.SNPvariation<-res$SNPEffect
+list.ASE.SNP<- res$GSEffect
+head(list.ASEgene,n=10)
+head(list.SNPvariation,n=10)
+head(list.ASE.SNP,n=10)
+```
+
+

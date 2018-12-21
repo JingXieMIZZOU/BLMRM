@@ -1,0 +1,26 @@
+Package: BLRM
+Type: Package
+Title: A Bayesian Logistic Regression Model for Genome-Wide Detection of Allele-Specific Gene Expression
+Version: 0.1.0
+Author: Jing Xie <jx5fd@mail.missouri.edu>
+Maintainer: Jing Xie <jx5fd@mail.missouri.edu>
+Description: A powerful and flexiable method (BLRM) to detect ASE genes and detect ASE variation within genes simultaneously while maintaining low computational requirements.
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.1
+License: GPL
+Depends: R (>= 2.10)
+Imports: 
+    IDPmisc,
+    MCMCpack,
+    Matrix,
+    dplyr,
+    lme4,
+    mvtnorm,
+    nloptr,
+    qvalue,
+    stats4
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
