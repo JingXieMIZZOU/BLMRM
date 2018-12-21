@@ -33,13 +33,13 @@ para.est<-function(data,rep){
         DATA<-GDD(i,data,rep=rep)
         D<-data.frame(SNP=DATA$SNP,NI=DATA$NI+2,YI=DATA$YI+1,Rep=DATA$Rep)
         tryCatch({
-           # print(i)
-            mod2=glmer(formula = cbind(YI, NI-YI)~ 1+(1 |Rep),
+            print(i)
+            mod2=glmer(formula = cbind(YI, NI-YI)~ 1+(1 |Rep),nAGQ = 0,
                        family = binomial, data = D)
             mod3=glmer(formula = cbind(YI, NI-YI)~ 0+(1 |Rep)+(1|SNP),
-                       family = binomial, data = D)
+                       nAGQ = 0,family = binomial, data = D)
             mod4=glmer(formula = cbind(YI, NI-YI)~ 1+(1 |Rep)+(1|SNP),
-                       family = binomial, data =D)
+                       nAGQ = 0, family = binomial, data =D)
             B4[i]<- as.vector(fixef(mod4))
             R4[i]<-lapply(VarCorr(mod4),'[[',1)$Rep
             S4[i]<-lapply(VarCorr(mod4),'[[',1)$SNP

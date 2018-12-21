@@ -30,7 +30,7 @@ PPsFUN<-function(par,index,data,rep){
         # Design matrix
         ZR=as.matrix(model.matrix(~0+(factor(D[,4]))))
         # Fit GLMM
-        mod1=glmer(formula = cbind(YI, NI-YI)~ 0+(1 |Rep),
+        mod1=glmer(formula = cbind(YI, NI-YI)~ 0+(1 |Rep),nAGQ = 0,
                    family = binomial, data = D)
         bhati<-unlist(lapply(ranef(mod1),'[[',1))
         sigR2hat<-lapply(VarCorr(mod1),'[[',1)$Rep
@@ -68,7 +68,7 @@ PPsFUN<-function(par,index,data,rep){
         # fit GLMM
         # betahati2 and bhati2: starting value in optim()
         mod2=glmer(formula = cbind(YI, NI-YI)~ 1+(1 |Rep),
-                   family = binomial, data = D)
+                   nAGQ = 0,family = binomial, data = D)
         betahati2<-as.vector(fixef(mod2))
         varbeta<-(summary(mod2)$coefficients[2])^2
         betatulta<-(mu*varbeta+s^2*betahati2)/(varbeta+s^2)
@@ -106,7 +106,7 @@ PPsFUN<-function(par,index,data,rep){
         ZR3=cbind(as.matrix(model.matrix(~0+(factor(D[,1])))),as.matrix(model.matrix(~0+(factor(D[,4])))))
         # Fit GLMM
         mod3=glmer(formula = cbind(YI, NI-YI)~ 0+(1 |Rep)+(1|SNP),
-                   family = binomial, data = D)
+                   nAGQ = 0,family = binomial, data = D)
         bhati3<-c(lapply(ranef(mod3),'[[',1)$SNP,lapply(ranef(mod3),'[[',1)$Rep)
         sigR2hat<-lapply(VarCorr(mod3),'[[',1)$Rep
         sigS2hat<-lapply(VarCorr(mod3),'[[',1)$SNP
@@ -145,7 +145,7 @@ PPsFUN<-function(par,index,data,rep){
         J4<-nlevels(D$SNP)
         # Fit GLMM
         mod4=glmer(formula = cbind(YI, NI-YI)~ 1+(1 |Rep)+(1|SNP),
-                   family = binomial, data =D)
+                   nAGQ = 0,family = binomial, data =D)
         bhati4<-c(lapply(ranef(mod4),'[[',1)$SNP,lapply(ranef(mod4),'[[',1)$Rep)
         betahati4<-as.vector(fixef(mod4))
         varbeta<-(summary(mod4)$coefficients[2])^2
@@ -178,7 +178,7 @@ PPsFUN<-function(par,index,data,rep){
         return(const4f+logbin4+prior4f+otherpartf)
     }
     #### nested
-    #print(index)
+    print(index)
     D<-GDD(index,data,rep)
     # data augumentation
     D[,2]<-D[,2]+2
