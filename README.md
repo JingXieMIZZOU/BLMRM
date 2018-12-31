@@ -3,7 +3,7 @@
 This R package provide a powerful and flexiable method (BLRM) to detect ASE genes and detect ASE variation within genes simultaneously while maintaining low computational requirements.
 
 ## Getting Started
-There are basically three steps to conduct ASE detection with BLRM, i.e., read in raw data, estiamte hyperparameters, and test hypotheses.Typical ASE analysis with BLRM can be performed by running below code, see introduction.pdf inside vignettes folder for details.
+There are basically three steps to conduct ASE detection with BLRM, i.e., read in raw data, estimate hyperparameters, and test hypotheses.Typical ASE analysis with BLRM can be performed by running below code, see introduction.pdf inside vignettes folder for details.
 
 ```
 library("BLRM")
