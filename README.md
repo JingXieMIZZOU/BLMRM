@@ -1,12 +1,12 @@
-﻿# BLRM: A Bayesian Logistic Regression Model for Genome-Wide Detection of Allele-Specific Gene Expression
+﻿# BLMRM: A Bayesian Logistic Regression Model for Genome-Wide Detection of Allele-Specific Gene Expression
 
-This R package provide a powerful and flexiable method (BLRM) to detect ASE genes and detect ASE variation within genes simultaneously while maintaining low computational requirements.
+This R package provide a powerful and flexiable method (BLMRM) to detect ASE genes and detect ASE variation within genes simultaneously while maintaining low computational requirements.
 
 ## Getting Started
-There are basically three steps to conduct ASE detection with BLRM, i.e., read in raw data, estimate hyperparameters, and test hypotheses.Typical ASE analysis with BLRM can be performed by running below code, see introduction.pdf inside vignettes folder for details.
+There are basically three steps to conduct ASE detection with BLMRM, i.e., read in raw data, estimate hyperparameters, and test hypotheses.Typical ASE analysis with BLMRM can be performed by running below code, see introduction.pdf inside vignettes folder for details.
 
 ```
-library("BLRM")
+library("BLMRM")
 rawdata<-read.csv(file="YourRawdata.csv")
 hyperparas<- para.est(data=rawdata,rep=R)
 res<- detection(data=rawdata,clean_index=hyperparas$index,paras=hyperparas$para,rep=R,fdr=0.05)
@@ -22,7 +22,7 @@ R (>= 2.10)
 
 ```
 install.packages("devtools")
-devtools::install_github("JingXieMIZZOU/BLRM")
+devtools::install_github("JingXieMIZZOU/BLMRM")
 ```
 
 
